@@ -1,0 +1,16 @@
+Jose Luna,Taller,2005-1,18
+Pablito Malito,Algebra,2004-3,16
+Pablito Malito,Algebra,2004-3,16
+Jose Luna,Fisica,2005-1,18
+Jose Luna,Taller,2005-1,18
+Jose Luna,Taller,2005-1,18
+Jose Luna,Taller,2005-1,18
+Pablito Malito,Algebra,2004-3,16
+Carlota Freites,Ciencias,2006-1,14
+Pablito Malito,Algebra,2004-3,16
+Pablito Malito,Algebra,2004-3,16
+Susana Arroz,Taller,2005-1,18
+Pablito Malito,Algebra,2004-3,16
+Pablito Malito,Algebra,2004-3,16
+Pablito Malito,Algebra,2004-3,16
+Susana Arroz,Taller,2005-1,18

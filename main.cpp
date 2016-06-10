@@ -1,358 +1,324 @@
-//---------------------------------------------------------------------------
+#include <cstdlib>
+#include <iostream>
 
-
-#include <stdio.h>
-#include<iostream>
 using namespace std;
-#include "conio.h"
-#include "stdlib.h"
-//---------------------------------------------------------------------------
-/*Stephanie Correa 19598574
-  Yohan Villamizar 17876465*/
-#pragma argsused
-///////////////////////////////////////////////////////////........DATA
-class data{
-	public:
-		int tipoVehiculo;
-                float pesoPromedio;
-		data(){ suc=NULL; pre=NULL;
-                }
-                data *suc, *pre;
-};
-//////////////////////////////////////////////////////////.......PESOS
-class pesos{
-        public:
-                pesos(){suc=NULL; pre=NULL;}
-                char placaVehiculo[7];
-                int tipoVehiculo;
-                float pesoBruto;
-                pesos *suc, *pre;
-};
-////////////////////////////////////////////////////////.........LISTA
-class lista{
-        public:
-                lista(){cab=NULL; cabe = NULL;}
-                void insercionData(data);
-                void insercionPesos(pesos);
-                void imprimirData();
-                void imprimirPesos();
-                void imprimirPromedios();
-                void eliminarPesos(pesos *);
-                data *cab;
-                pesos *cabe;
-};
+/*Stephanie Correa C.I 19.598.574
+  seccion 2*/
+  
+class alumnos{
+      public:
+             alumnos(){}
+             long ced;
+             char nombre[30];
+             int edad;
+      };
+class notas{
+      public:
+             notas(){}
+             long ced;
+             char materia[30];
+             int nota;
+             char periodo[10];
+      };
+class mejor{
+      public:
+             mejor(){}
+             char materia[30];
+             int nota;
+             
+      }; 
+class reporte{
+      public:
+             reporte(){}
+             
+             char materia[30];
+             long ced;
+             char nombre[30];
+             int nota;
+             char periodo[10];
+      }; 
+                        
+int main(int argc, char *argv[])
+{   
+    int na,nn,a,b;
+    
+    reporte *t;
+    t=(reporte*)malloc(sizeof(reporte)*100);
+    
+    FILE *x,*y;
+    x = fopen("Alumnos.dat","rb");
+    y = fopen("Notas.dat","rb");
+    
+    if(!x||!y){
+               cout<<"Error de apertura"<<endl;
+               fclose(x);fclose(y);
+               } 
+      else{
+           alumnos o;
+           fseek(x,0,2);
+           na = ftell(x)/sizeof(alumnos);
+           
+          // cout<<na;
+           alumnos *v;
+           v = new alumnos[na];
+           rewind(x);
+           a=0;
+             
+             fread(&o,sizeof(alumnos),1,x);
+             while(!feof(x)){
+                             v[a]=o;
+                            // cout<<" "<<v[a].nombre<<endl;
+                             a++;
+                             fread(&o,sizeof(alumnos),1,x);
+                             }
+            notas g;
+            fseek(y,0,2);
+            nn = ftell(y)/sizeof(notas);
+            //cout<<nn;                 
+              notas *w;
+              w = new notas[nn];
+              rewind(y);
+              b=0;
+              
+              fread(&g,sizeof(notas),1,y);
+               while(!feof(y)){
+                               w[b]=g;
+                              //cout<<" "<<w[b].materia<<" "<<w[b].nota<<endl;
+                               b++;
+                               fread(&g,sizeof(notas),1,y);
+                               }
+                               
+            fclose(x);
+            fclose(y);
+            
+            float *vector;
+            vector = new float[a];
+            float acum=0,prom=0;
+            int n=0,l=0,pos=0,band=0;
+            
+               for(int i=0;i<a;i++){
+                     vector[i]=0; 
+                 //cout<<"\n\tEstudiante #"<<i+1<<endl;
+                 //cout<<"\n\tCedula: "<<v[i].ced<<" Nombre: "<<v[i].nombre<<" Edad: "<<v[i].edad<<endl;
+                       acum=0;
+                       prom=0;
+                       n=0;
+                       
+                      for(int j=0;j<b;j++){
+                               if(v[i].ced==w[j].ced){
+                                     acum+=w[j].nota;
+                                     pos=i;
+                                     n++;
+                                      } 
+                                                                    
+                               }
+                     
+                          prom=acum/n; 
+                          vector[pos]=prom;
+                          l=0;
+                          pos=0;
+                          band=0;
+                          
+                          while(l<b && band){
+                                     if(v[i].ced!=w[l].ced){
+                                          pos=i; 
+                                          band=1;                 
+                                                            }
+                                      l++;                      
+                                     }
+                          
+                          if(band){
+                             vector[pos]=0;
+                             }
+                             
+                       }
+                       //vector de promedios
+                    /*  for(int i=0;i<a;i++){
+                               cout<<" "<<vector[i]<<endl;
+                               }
+                    */
+//Mejor estudiante y peor estudiante por promedio
 
-void lista::insercionPesos(pesos pes){
-        pesos *nuevo, *antes, *recor;
-        int enc = 0;
-        nuevo = new pesos;
-        if(nuevo)
-        {
-                (*nuevo)=pes;
-                recor = cabe;
-                antes = NULL;
-                while (recor&&!enc)
-                {
-                        if (recor->pesoBruto<nuevo->pesoBruto)
-                        {
-                                enc = 1;
-                        }else{
-                                antes = recor;
-                                recor = recor->suc;
-                        }
-                }
-                nuevo->pre = antes;
-                nuevo->suc = recor;
-                if (recor)
-                        recor->pre = nuevo;
-                if (antes)
-                        antes->suc = nuevo;
-                else
-                        cabe = nuevo;
-        }
-        else
-                cout<<"NO HAY MEMORIA";
+      float mayor=-1,menor=9.9999;
+      int p,p1;
+      
+      for(int i=0;i<a;i++){
+              
+              if(vector[i] < menor){
+                menor = vector[i];
+                p=i;           
+                           }
+              if(vector[i] > mayor){
+                mayor = vector[i];
+                p1=i;
+                 }             
+              }
+              cout<<"\n***************** Mejor Estudiante y Peor Estudiante ***************"<<endl;
+              cout<<"\n\tEl mejor estudiante es "<<v[p1].nombre<<" Cedula: "<<v[p1].ced<<" Edad: "<<v[p1].edad<<endl;
+              cout<<"\tPromedio: "<<vector[p1]<<endl; 
+              cout<<"\n\tEl peor estudiante es "<<v[p].nombre<<" Cedula: "<<v[p].ced<<" Edad: "<<v[p].edad<<endl;
+              cout<<"\tPromedio: "<<vector[p]<<endl; 
+
+//Imprimir un reporte con las notas del mejor estudiante
+         
+         n=0;
+         for(int i=0;i<b;i++){
+               if(v[p1].ced==w[i].ced){
+                   n++;                    
+                                       }
+               }
+         
+         mejor *r;
+         r = new mejor[n];
+         n=0;
+         cout<<"\n**** Mejor estudiante con sus respectivas materias en orden con sus notas ****"<<endl;
+         cout<<"\n\t "<<v[p1].ced<<" "<<v[p1].nombre<<endl;
+          for(int j=0;j<b;j++){
+                  if(v[p1].ced==w[j].ced){
+                     strcpy(r[n].materia,w[j].materia);
+                     r[n].nota = w[j].nota;
+                     n++;                     
+                                          }
+                  } 
+              
+            mejor elem;
+            int k;
+            for(int i=1;i<n;i++){
+                    k = i-1;
+                    elem = r[i];
+                    while(k>=0 && strcmpi(elem.materia,r[k].materia)<0){
+                          r[k+1] = r[k];
+                          k--;                                            
+                                                                      }
+                       r[k+1] = elem;                                               
+                    }
+                
+                for(int i=0;i<n;i++){
+                        cout<<"\t "<<r[i].materia<<" "<<r[i].nota<<endl;
+                        }                                     
+                  cout<<endl;
+                  
+//Generar reporte con el mejor estudiante de cada materia
+
+    FILE *h;
+    h=fopen("Reporte.txt","w");
+            
+            int may=-1,posi=0,q=0;
+            int mayo=-1;
+             for(int i=0;i<b;i++){
+                    
+                     for(int j=i+1;j<b;j++)
+                       if(strcmpi(w[i].materia,w[j].materia)==0)
+                               q++;                                      
+                        
+                     }
+                     
+              
+                 t = new reporte[q];
+                 int s=0,band1=0;
+                 int gj=0;
+                  for(int i=0;i<b;i++){
+                      band1=0;
+                      gj=0;
+                      while(gj < b){
+                              if(strcmpi(t[gj].materia,w[i].materia)==0){
+                                       band1=1;                                  
+                                                                         } 
+                              gj++;
+                              }
+                       if(!band1){       
+                          for(int j=i+1;j<b;j++){
+                                 
+                                  if(strcmpi(w[i].materia,w[j].materia)==0){
+                                       if(w[i].nota < w[j].nota){
+                                            may=w[j].nota;
+                                             t[s].nota=may;
+                                             strcpy(t[s].materia,w[j].materia);
+                                             strcpy(t[s].periodo,w[j].periodo);
+                                              for(int k=0;k<a;k++){
+                                                  if(v[k].ced==w[j].ced)
+                                                     strcpy(t[s].nombre,v[k].nombre);                
+                                                    }//for
+                                                s++;              
+                                       }//if
+                                       if(w[i].nota > w[j].nota){
+                                             may=w[i].nota;
+                                             t[s].nota=may;
+                                             strcpy(t[s].materia,w[i].materia);
+                                             strcpy(t[s].periodo,w[i].periodo);
+                                              for(int k=0;k<a;k++){
+                                                  if(v[k].ced==w[i].ced)
+                                                     strcpy(t[s].nombre,v[k].nombre);                
+                                                    }//for
+                                                s++;   
+                                                    }//if
+                                               
+                                        if(w[i].nota==w[j].nota){
+                                             
+                                              for(int k=0;k<a;k++){
+                                                  if(v[k].ced==w[i].ced){
+                                                     if(vector[k] > vector[k+1])
+                                                          may =(int) vector[k];
+                                                          strcpy(t[s].nombre,v[k].nombre);
+                                                                           
+                                                      }//if
+                                                                
+                                                    }//for
+                                                 t[s].nota=may;
+                                                 strcpy(t[s].materia,w[i].materia);
+                                                 strcpy(t[s].periodo,w[i].periodo);
+                                                 s++;   
+                                                    }//if              
+                                        }  //if grande          
+                                     }    
+                                  } //for
+                                       
+                          }  //for
+                 
+                 
+ //insercion binaria  
+               
+                 reporte yp;
+                 int ult,pri,central;
+                 for(int i=1;i<s;i++){
+                       yp=t[i];
+                       pri=0;
+                       ult=i-1;
+                       //busqueda binaria de la posicion de insercion
+                       while(pri<=ult){
+                          central=(int)((pri+ult)/2);
+                          if(strcmpi(yp.nombre,t[central].nombre)<0){
+                                ult=central-1;
+                               }
+                            else{
+                                 pri=central+1;
+                                 }
+                       //se desplaza a la derecha  los elementos ordenados para insertar de nuevo
+                          for(int j=i-1;j>=pri;j--){
+                                  t[j+1]=t[j];
+                                  }
+                            t[pri]=yp;                        
+                                   }
+                       }
+                        char nombre[30];
+                        long ced;
+                        char materia[30];
+                        char periodo[10];
+                        int nota;
+                        
+                        for(int o=0;o<s;o++){
+                           strcpy(nombre,t[o].nombre);
+                           strcpy(materia,t[o].materia);
+                           strcpy(periodo,t[o].periodo);
+                           nota=t[o].nota;
+                           ced=t[o].ced;
+                           fprintf(h,"%s,%s,%s,%d\n",nombre,materia,periodo,nota);
+                                           }
+                             
+                           fclose(h); 
+                                     
+           }         
+    
+    system("PAUSE");
+    return EXIT_SUCCESS;
 }
-
-void lista::eliminarPesos(pesos *pes)
-{
-        pesos *antes, *recor, *aux;
-        recor = cabe;
-        if(recor)
-        {
-                antes = NULL;
-                while (recor)
-                {
-                        if (strcmpi(pes->placaVehiculo,recor->placaVehiculo)==0)
-                        {
-                                aux = recor;
-                                recor = recor->suc;
-                                aux->suc = NULL;
-                                if(antes==NULL)
-                                        recor->pre = NULL;
-
-                                if(antes!=NULL){
-                                        aux->pre = NULL;
-                                        if(recor==NULL)
-                                                antes->suc = NULL;
-                                        else{
-                                                recor->pre = antes;
-                                                antes->suc = recor;
-                                        }
-                                }
-                                delete(aux);
-                                break;
-                        }else{
-                                antes = recor;
-                                recor = recor->suc;
-                        }
-                }
-        }
-        else
-                cout<<"NO HAY MEMORIA";
-}
-
-void lista::insercionData(data dat)
-{
-        data *nuevo, *antes, *recor;
-        int enc = 0;
-        nuevo = new data;
-        if(nuevo)
-        {
-                (*nuevo)=dat;
-                recor = cab;
-                antes = NULL;
-                while (recor&&!enc)
-                {
-                        if (recor->tipoVehiculo<nuevo->tipoVehiculo)
-                                enc=1;
-                        else{
-                                antes = recor;
-                                recor = recor->suc;
-                        }
-                }
-                nuevo->pre = antes;
-                nuevo->suc = recor;
-                if (recor)
-                        recor->pre = nuevo;
-                if (antes)
-                        antes->suc = nuevo;
-                else
-                        cab = nuevo;
-        }
-        else
-                cout<<"NO HAY MEMORIA";
-};
-
-void lista::imprimirData()
-{
-        data *record;
-        record = cab;
-        while (record)
-        {
-                cout<<record->tipoVehiculo<<" "<<record->pesoPromedio<<endl;
-                record = record->suc;
-        }
-}
-
-void lista::imprimirPesos(){
-        pesos *recor;
-        recor = cabe;
-        while (recor)
-        {
-                cout<<recor->placaVehiculo<<" "<<recor->tipoVehiculo<<" "<<recor->pesoBruto<<endl;
-                recor = recor->suc;
-        }
-}
-
-/*void lista::imprimirPromedios()
-{
-        pesos *recor;
-        recor = cabe;
-        while (recor)
-        {
-                cout<<recor->
-                recor = recor->suc;
-        }
-} */
-////////////////////////////////////////////////////////////////.......ARCHIVO
-class archivo{
-        public:
-                archivo(){}
-                lista cargarData(lista);
-                lista cargarPesos(lista,lista);
-                data dat;
-                pesos pes;
-};
-
-lista archivo::cargarData(lista lista)
-{
-        char cadd[150];
-        char *sed;
-
-        FILE *fpd;
-        fpd=fopen("data.txt","r");
-
-        if(!fpd){
-                cout<<"error de apertura"<<endl;
-                return lista;
-        }
-        else{
-                int y=0;
-                fgets(cadd,150,fpd);
-                while(!feof(fpd))
-                {
-                        sed=strtok(cadd,",");
-                        dat.tipoVehiculo=atoi(sed);
-                        sed=strtok(NULL,",");
-                        dat.pesoPromedio = atof(sed);
-                        lista.insercionData(dat);
-                        fgets(cadd,150,fpd);
-                        y++;
-                }//fin del while
-        }//fin del else
-        fclose(fpd);
-        return lista;
-}
-
-lista archivo::cargarPesos(lista listado, lista lista){
-        char cad[150];
-        char *se;
-        data *recor;
-        pesos *recorp, peso;
-        int enc =0;
-
-        FILE *fp;
-        fp=fopen("pesos.txt","r");
-
-        if(!fp){
-                cout<<"error de apertura pesos.txt"<<endl;
-                return listado;
-        }
-        else{
-                int y=0;
-                while(!feof(fp))
-                {
-                        fgets(cad,150,fp);
-                        se=strtok(cad,",");
-                        strcpy(pes.placaVehiculo,se);
-                        se=strtok(NULL,",");
-                        pes.tipoVehiculo=atoi(se);
-                        se=strtok(NULL,",");
-                        pes.pesoBruto = atof(se);
-                        recor = lista.cab;
-                        while (recor)
-                        {
-                                if (pes.tipoVehiculo==recor->tipoVehiculo)
-                                {
-                                        recorp = listado.cabe;
-                                        if(recorp==NULL){
-                                                if(pes.pesoBruto>recor->pesoPromedio){
-                                                        listado.insercionPesos(pes);
-                                                        break;
-                                                }
-                                        }
-                                        else{
-                                                while (recorp)
-                                                {
-                                                        if (strcmpi(recorp->placaVehiculo,pes.placaVehiculo)==0)
-                                                        {
-                                                                if (pes.pesoBruto>recorp->pesoBruto)
-                                                                {
-                                                                        listado.eliminarPesos(recorp);
-                                                                        listado.insercionPesos(pes);
-                                                                }
-                                                                enc = 1;
-                                                                break;
-                                                        }
-                                                        recorp = recorp->suc;
-                                                }
-                                                if(recorp==NULL){
-                                                        if(pes.pesoBruto>recor->pesoPromedio)
-                                                                listado.insercionPesos(pes);
-                                                        enc = 1;
-                                                }
-                                        }
-                                }
-                                if(enc == 1){
-                                        enc = 0;
-                                        break;
-                                }else
-                                recor=recor->suc;
-                        }
-                        y++;
-                }//fin del while
-        }//fin del else
-        fclose(fp);
-        return listado;
-}
-
-///////////////////////////////////////////////////////////////.......MAIN
-int Menu()
-{
-	int opc;
-	cout<<"---------------MENU DE OPCIONES------------------"<<endl;
-	cout<<"1-.GENERAR LA ESTRUCTURA DE DATOS DE REFERENCIA"<<endl;
-	cout<<"2-.GENERAR LA ESTRUCTURA DE DATOS RESUMEN"<<endl;
-	cout<<"3-.PROMEDIO DE PESOS"<<endl;
-	cout<<"4-.MOSTRAR ESTRUCTURA DE REFERENCIA Y ESTRUCTURA DE RESUMEN"<<endl;
-	cout<<"5-.SALIR"<<endl;
-	cin>>opc;
-	return opc;
-}
-
-int main(int argc, char* argv[])
-{
-        archivo arch;
-        lista lista, listado;
-
-        int n;
-	n = Menu();
-
-
-	while(n!=5){
-
-		switch (n)
-		{
-		case 1: system("cls");
-                        cout<<"LISTA DE DATOS GENERADO"<<endl;
-                        lista = arch.cargarData(lista);
-			getch();
-			break;
-		case 2:
-			system("cls");
-                        cout<<"LISTA DE PESOS GENERADO"<<endl;
-                        listado = arch.cargarPesos(listado, lista);
-			getch();
-			break;
-		case 3:
-			system("cls");
-                        cout<<"PESOS PROMEDIOS"<<endl;
-
-			getch();
-			break;
-		case 4:
-			system("cls");
-                        cout<<"DATA: "<<endl;
-                        lista.imprimirData();
-                        cout<<"\nPESOS: "<<endl;
-                        listado.imprimirPesos();
-			getch();
-			break;
-        case 5:
-			system("cls");
-                        cout<<"Hasta luego =D"<<endl;
-			break;	
-		default: cout<<"Opcion incorrecta"<<endl;
-		}
-		system("cls");
-        		n = Menu();
-	}
-        getch();
- 
-
-        return 0;
-}
-//---------------------------------------------------------------------------
-
- 
